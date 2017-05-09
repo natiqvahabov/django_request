@@ -29,13 +29,13 @@ EMAIL_USE_TLS = False
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '=rjqz33setptgn3-0eza+bt#@kl5ncqlyt+=q4spn-3nbkixl&'
+SECRET_KEY = '=***************************************'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 def show_toolbar(request):
-    return True
+    return False
 
 DEBUG_TOOLBAR_CONFIG = {
     "SHOW_TOOLBAR_CALLBACK" : show_toolbar,
