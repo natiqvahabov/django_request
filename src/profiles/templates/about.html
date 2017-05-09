@@ -1,0 +1,395 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load staticfiles %}
+{% load notifications_tags %} 
+{% load custom_tags %}
+{% block head_title %} Messages {% endblock %}
+
+{% block body %}
+
+{% block content %}
+
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/font-awesome.min.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/inbox.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/usersList.css' %}">
+
+<script type="text/javascript" src="{% static 'js/replace.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
+
+
+<style>
+#fileselector {margin: 10px;}
+#upload-file-selector {display:none;}
+.margin-correction {margin-right: 10px;}
+.media-body {}
+.coupon {margin-top: 30px; padding: 10px;border: 3px dashed #ccc; }
+h4{color: #7c795d; font-family: 'Trocchi', serif; font-size: 30px; font-weight: normal; line-height: 48px; margin: 0;}
+.modal-open .container-fluid, .modal-open  .container {
+    -webkit-filter: blur(5px) grayscale(90%);
+}
+.badge{
+    background-color: red;
+}
+</style>
+
+<script type="text/javascript">
+function fileType(){
+    var file = document.getElementById("commentFileType");
+    alert(file);
+    if (file){
+        var extention = file.toString().split('.').pop(); 
+        file.value=extention;
+    }
+}
+</script>
+
+<div class="jumbotron" style="margin-top:50px;">
+
+<div class="container bootstrap snippet">
+    <div class="row">
+        <!--=========================================================-->
+        <!-- selected chat -->
+        <div style="margin: auto; width: 75%; padding: 10px;">
+            <h5 style="float:left;">
+                <div class="alert alert-success gg" style="margin-top:10px">Request id: <b>{{singleRequest.id}}</b></div>
+            </h5>
+            <h5 style="float:right;" >
+                <div class="alert alert-success gg" style="margin-top:10px">Kateqoriya: <b>{{singleRequest.id|get_category}}</b></div>
+            </h5>
+            <br><br>
+            <div class="chat-message">
+                <ul class="chat">
+                    <li class="left clearfix">
+                        <span class="chat-img pull-left">
+                            <img src="{{ BASE_DIR }}/media/profile_pictures/{{singleRequest.sender}}/profile.jpg" 
+                            data-toggle="popover" data-trigger="hover" data-content="Əlaqə: {{singleRequest.sender|get_email}}" alt="User Avatar">
+                        </span>
+
+                        <div class="chat-body clearfix">
+                            <div class="header">
+                                <strong class="primary-font" id="singleRequest" value="">{{singleRequest.sender}}</strong>
+                                <small class="pull-right text-muted"><i class="fa fa-clock-o"></i>{{singleRequest.ins_date}}</small>
+                            </div>
+                            <p>{{ singleRequest.description|convert_utf8 }}</p>
+                            {% if singleRequest.file_path %}
+                            <h5>
+                              <a href="{{ BASE_DIR }}/media/{{singleRequest.file_path}}" download="file" style="color:#339966;text:15px"id="commentFileType"> <font size="4"> File qosulub</font> ~{{singleRequest.file_path|getFileName}}</a>
+                            </h5>
+                            {% endif %}
+                        </div>                        
+                    </li>
+
+
+                    {% if comments %}
+                    <hr><h4 class="text-center">Serhler</h4><br>
+                    
+                    {% for comment in comments %}
+                    <li class="left clearfix">
+                        <span class="chat-img pull-left">
+                            <img src="{{ BASE_DIR }}/media/profile_pictures/{{ comment.ans_id }}/profile.jpg" 
+                            data-toggle="popover" data-trigger="hover" data-content="Əlaqə: {{comment.ans_id|get_email}}" alt="User Avatar">
+                        </span>
+                        <div class="chat-body clearfix">
+                            <div class="header">
+                                <strong class="primary-font">{{ comment.ans_id }}</strong>
+                                <small class="pull-right text-muted"><i class="fa fa-clock-o"></i>{{comment.ins_date}}</small>
+                            </div>
+                            <p>
+                              {{comment.comment_text | convert_utf8}}
+                            </p>
+                            {% if comment.file_path %}
+                            <h5>
+                              <a href="{{ BASE_DIR }}/media/{{comment.file_path}}" download="file" style="color:#339966;text:15px"id="commentFileType"> <font size="4"> File qosulub</font> ~{{comment.file_path|getFileName}}</a>
+                            </h5>
+                            {% endif %}
+                        </div>
+                    </li> 
+                    {% endfor %}
+                    
+                    {% endif %}
+
+                    {% if actions %}
+                    <hr><h4 class="text-center">Request haqqında</h4><br>
+
+                    {% for action in actions %}
+                    <li class="left clearfix">
+                        <span class="chat-img pull-left">
+                            <img src="{{ BASE_DIR }}/media/profile_pictures/{{ action.user_id|get_profile }}/profile.jpg" alt="User Avatar">
+                        </span>
+                        <div class="chat-body clearfix">
+
+                            {% if action.action_id == 3 %}
+                            <p>
+                              <div class="alert alert-success gg" style="margin-top:10px" id="closedRequest">
+                                <input type="hidden" id="closedRequestUser" value="{{action.user_id|get_profile}}">
+                                <p class="text-center"> <b>{{action.user_id|get_profile}}</b> requesti qapatdi <br><i>{{action.a_date}}</i></p>
+                              </div>
+                            </p>
+                            {% endif %}
+
+                            {% if action.action_id == 5 %}
+                            <p>
+                              <div class="alert alert-info gg" style="margin-top:10px" id="lockedRequest">
+                                <input type="hidden" id="lockedRequestUser" value="{{action.user_id|get_profile}}">
+                                <p class="text-center"><b>{{action.user_id|get_profile}}</b> requesti oz uzerine goturdu <br><i>{{action.a_date}}</i></p>
+                              </div>
+                            </p>
+                            {% endif %}
+
+                        </div>
+                    </li> 
+                    {% endfor %}
+                    {% endif %}
+
+                    {% for tag in tags %}
+                    <li class="left clearfix">
+                        <span class="chat-img pull-left">
+                            <img src="{{ BASE_DIR }}/media/profile_pictures/{{tag.1}}/profile.jpg" alt="User Avatar">
+                        </span>
+                        <div class="chat-body clearfix">
+                            <p>
+                              <div class="alert alert-success gg" style="margin-top:10px">
+                                <p class="text-center"> <b>{{tag.0}}</b> requeste elave edildi </p>
+                              </div>
+                            </p>
+                        </div>   
+                    </li> 
+                    {% endfor %}
+
+                    {% if isPreviousTag %}
+                      {% for prevTag in isPreviousTag %}
+                        <div class="chat-body clearfix">
+                            <p>
+                              <div class="alert alert-danger gg" style="margin-top:10px">
+                                <p class="text-center"> <b>{{prevTag}}</b> </p>
+                              </div>
+                            </p>
+                        </div>
+                      {% endfor %}
+                    {% endif %}
+
+                </ul>
+            </div>
+
+        <div class="coupon" id="coupon">
+        <!-- Send comment to database -->
+        <div class="divComment" style="display: none">
+        <form action="{% url 'addComment' %}" method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+            
+            <div style="margin: auto; width: 100%; padding: 10px;">
+                 File əlave et: <input type="file" name="fileupload" value="fileupload" id="fileupload"> <label for="fileupload"></label>
+
+                <input type="hidden" name="request_id" value="{{singleRequest.id}}" />
+                <div class="input-group">
+                    <input class="form-control border no-shadow no-rounded" id="message" name="message" placeholder="Mesajı daxil edin">
+                    <span class="input-group-btn">
+                        <button class="btn btn-success no-rounded" id="writeRequest" type="submit">Göndər</button>
+                    </span>
+                </div><!-- /input-group --> 
+            </div>
+        </form>
+             <div style="margin: 0 auto;text-align:center;"> <button class="btn btn-primary btn-sm active" id="backButton"> <span class="glyphicon glyphicon-arrow-left" style="font-size: 30px;" ></span><br>Geri</button></div>  
+        </div>
+
+        <!-- Make request locked -->
+        <div class="divLock" style="display: none">
+        <form action="{% url 'updateRequestLocked' %}" method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <input type="hidden" name="request_id" value="{{singleRequest.id}}" />
+
+        <div class="alert alert-warning" role="alert">
+           <p class="text-center"><strong>Diqqet!</strong> Suali oz uzerinize goturmekde eminsinizmi?</p>
+        </div>
+
+            <div class="col-sm-6" style="margin: 0 auto;text-align:center;" name="lock" value="lock"> <button class="btn btn-primary btn-sm active" id="backButton"> <span class="glyphicon glyphicon-ok" style="font-size: 30px;" ></span><br>Beli</button></div>
+            
+        </form>
+            <div class="col-sm-6" style="margin: 0 auto;text-align:center;"> <button class="btn btn-primary btn-sm active" id="backButton"> <span class="glyphicon glyphicon-remove" style="font-size: 30px;" ></span><br>Xeyr</button></div>
+        </div>
+
+        <!-- Make request done -->
+        <div class="divDone" style="display: none">
+        <form action="{% url 'updateRequestDone' %}" method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <input type="hidden" name="request_id" value="{{singleRequest.id}}" />
+
+        <div class="alert alert-warning" role="alert">
+             <p class="text-center"><strong>Diqqet!</strong> Suali qapatmaqda eminsinizmi?</p>
+        </div>
+            <div class="col-sm-6" style="margin: 0 auto;text-align:center;" name="done" value="done"> <button class="btn btn-primary btn-sm active" id="backButton"> <span class="glyphicon glyphicon-ok" style="font-size: 30px;" ></span><br>Beli</button></div>  
+        </form>
+            <div class="col-sm-6" style="margin: 0 auto;text-align:center;"> <button class="btn btn-primary btn-sm active" id="backButton"> <span class="glyphicon glyphicon-remove" style="font-size: 30px;" ></span><br>Xeyr</button></div>           
+        </div>
+
+
+        <div class="row">
+
+        {% if userStatus %}
+        <input type="hidden" id="userStatus" name="userStatus" value="{{userStatus}}">
+        {% endif %}
+        
+          <div id="ar">
+            <!-- Write Comment -->
+            <div class="col-sm-3" style="margin: 0 auto;text-align:center;"> <button class="btn btn-primary btn-lg active" id="commentButton"> <span class="glyphicon glyphicon-comment" style="font-size: 50px;" ></span><br>Şərh yaz </button></div>
+
+            <!-- Tag someone -->
+            <div class="col-sm-3" style="margin: 0 auto;text-align:center;"> <button class="btn btn-primary btn-lg active" id="addUserButton"><i class="fa fa-users" aria-hidden="true" style="font-size: 50px;"></i><br>Elave et </button></div>
+
+            <!--
+            <div id="ar_sub">
+                <div class="col-sm-3" style="margin: 0 auto;text-align:center; color:grey;" id=""> <button class="btn btn-primary btn-lg disabled" id=""> <span class="glyphicon glyphicon-lock" style="font-size: 50px;" ></span><br>Lock et</button></div>
+
+                <div class="col-sm-3" style="margin: 0 auto;text-align:center;" id=""> <button class="btn btn-primary btn-lg disabled" id=""> <span class="glyphicon glyphicon-ok" style="font-size: 50px;" ></span><br>Bagla</button></div>
+            </div>
+            -->
+
+          </div>
+
+        {% if singleRequest.status != "closed" %}
+        <div id="ak">
+            <div id="mainLockDiv">
+            <!-- Eger sual lock edilmeyibse -->
+            <div class="col-sm-3" style="margin: 0 auto;text-align:center;" id="unlockedRequestDiv"> <button class="btn btn-primary btn-lg active" id="lockButton"> <span class="glyphicon glyphicon-lock" style="font-size: 50px;" ></span><br>Lock et </button></div>
+
+            <!-- Sual lock olunubsa -->
+            <div class="col-sm-3" style="margin: 0 auto;text-align:center; display: none;" id="lockedRequestDiv"> 
+                <div class="alert alert-warning" role="alert">
+                    <p class="text-center">Suali isleyir<br>
+                        <strong><script>document.write(document.getElementById('lockedRequestUser').value);</script></strong>
+                    </p>
+                </div>
+            </div>
+            </div>
+        </div>
+        {% endif %}
+
+            <div id="mainCloseDiv">
+            <!-- Eger sual qapanmayibsa -->
+            {% if request.user.username == singleRequest.sender %}
+            <div class="col-sm-3" style="margin: 0 auto;text-align:center;" id="openRequestDiv"> <button class="btn btn-primary btn-lg active" id="doneButton"> <span class="glyphicon glyphicon-ok" style="font-size: 50px;" ></span><br>Bagla</button></div>
+            {% endif %}
+
+            <!-- Sual artiq qapanibsa -->
+            <div class="col-sm-3" style="margin: 0 auto;text-align:center; display: none;" id="closedRequestDiv"> 
+                <div class="alert alert-warning" role="alert">
+                    <p class="text-center">Suali qapatdi<br>
+                       <strong><script>document.write(document.getElementById('closedRequestUser').value);</script></strong>
+                    </p>
+                </div>
+            </div>
+            </div>
+
+        </div>
+        </div>  
+    
+        <!--
+              <p class="text-center" style="margin-top:25px;">
+                 <a href="{% url 'home' %}" class="btn btn-primary btn-lg active" role="button">Ana səhifə</a>
+              </p>
+        -->
+        </div>         
+      </div>        
+    </div>
+</div>
+</div>
+
+<!-- Modal -->
+<form action="{% url 'tagUser' %}" method="post" enctype="multipart/form-data">
+{% csrf_token %}
+<input type="hidden" name="request_id" value="{{singleRequest.id}}" />
+<div class="modal fade" id="myModal" tabindex="-1" style="margin-top:10px" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                {% include 'usersList.html' %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Modali bagla</button>
+                <input type="submit" class="btn btn-primary" value="Secilmisleri elave et"></button>
+            </div>
+        </div>
+    </div>
+</div>
+</form>
+
+<script type="text/javascript">
+$(document).ready(function(){
+    $(".dropdown-toggle").dropdown();
+    $('[data-toggle="popover"]').popover();
+    var status = document.getElementById('userStatus').value;
+    var coupon = document.getElementById('coupon');
+    var ar = document.getElementById('ar');
+    var ak = document.getElementById('ak');
+    var ar_sub = document.getElementById('ar_sub');
+
+    if(status=="aa"){
+       coupon.style.display = 'none';
+    }
+    if(status=="ar"){
+       ar.style.display = 'block';
+       ak.style.display = 'none';
+    }
+    if(status=="ak"){
+        ar.style.display = "block"
+        ar_sub.style.display = "none"
+        ak.style.display = "block"
+    }
+});
+
+$('body').on('click', '#commentButton', function(){
+    $( "#mainLockDiv" ).toggle( "slow" );
+    $( "#mainCloseDiv" ).toggle( "slow" );
+    $( "#addUserButton" ).toggle( "slow" );
+    $( "#commentButton" ).toggle( "slow" );
+    $( ".divComment" ).toggle( "slow" );
+});
+
+$('body').on('click', '#lockButton', function(){
+    $( "#mainLockDiv" ).toggle( "slow" );
+    $( "#addUserButton" ).toggle( "slow" );
+    $( "#mainCloseDiv" ).toggle( "slow" );
+    $( "#commentButton" ).toggle( "slow" );
+    $( ".divLock" ).toggle( "slow" );
+});
+
+$('body').on('click', '#doneButton', function(){
+    $( "#mainLockDiv" ).toggle( "slow" );
+    $( "#addUserButton" ).toggle( "slow" );
+    $( "#mainCloseDiv" ).toggle( "slow" );
+    $( "#commentButton" ).toggle( "slow" );
+    $( ".divDone" ).toggle( "slow" );
+});
+
+$('body').on('click', '#backButton', function(){
+    $( "#mainLockDiv" ).toggle( "slow" );
+    $( "#addUserButton" ).toggle( "slow" );
+    $( "#mainCloseDiv" ).toggle( "slow" );
+    $( "#commentButton" ).toggle( "slow" );
+    $( ".divComment" ).hide( "slow" );
+    $( ".divLock" ).hide( "slow" );
+    $( ".divDone" ).hide( "slow" );
+});
+
+$('body').on('click', '#addUserButton', function(){
+    $('#myModal').modal('show'); 
+});
+
+var myElem = document.getElementById('closedRequest');
+if (myElem){
+   document.getElementById('openRequestDiv').style.display = 'none'; 
+   document.getElementById('closedRequestDiv').style.display = 'block';  
+}
+
+var myElem2 = document.getElementById('lockedRequest');
+if (myElem2){
+   document.getElementById('unlockedRequestDiv').style.display = 'none'; 
+   document.getElementById('lockedRequestDiv').style.display = 'block';  
+}
+
+</script>
+
+{% endblock %}
+{% endblock %}

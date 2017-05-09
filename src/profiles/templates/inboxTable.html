@@ -1,0 +1,433 @@
+<html>
+
+<head>
+    <style>
+     body {
+            font: 12px/1.4 sans-serif;
+        }
+        #page-wrap {
+            margin: 50px;
+        }
+        p {
+            /*margin: 20px 0;*/
+            padding: 5px;
+        }
+        a:link,
+        a:visited {
+            color: #2790ae;
+            text-decoration: none;
+            outline: none;
+        }
+        /* 
+    Generic Styling, for Desktops/Laptops 
+    */
+        .contentWell {
+            background: #e5e5e5;
+            margin: 1em 0;
+            padding: 1em;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
+            -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25);
+            -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25);
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25);
+        }
+        div#secureMessage {
+            float: left;
+            width: 100%;
+            margin: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th {
+            background: #333;
+            color: white;
+            font-weight: bold;
+        }
+        td,
+        th {
+            padding: 6px;
+            /*border: 1px solid #ccc; */
+            text-align: left;
+        }
+        table {
+            margin: 0;
+            padding: 0;
+        }
+        table tr {
+            text-align: left;
+            border-bottom: 1px solid #ccc;
+            border-top: 1px solid #ccc;
+        }
+        table th {
+            border-width: 2px;
+        }
+        table td {
+            color: #666;
+        }
+        table tr:last-child th,
+        table tr:last-child td {
+            border-bottom: none;
+        }
+        table tr:nth-child(even) {
+            background: #eee;
+        }
+        ul {
+            padding: 0;
+        }
+        .sendMsg {
+            display: inline;
+            width: 100px;
+            color: #3E3E3E;
+            background-color: #EBEBEB;
+            border: 2px solid #959595;
+            font-size: 12px;
+            font-weight: 400;
+            padding: 5px;
+        }
+        .msgResults {
+            float: left;
+            width: 100%;
+        }
+        .msgInbox {
+            color: #3E3E3E;
+            padding: 10px;
+            height: 20px;
+        }
+        .inboxNav li {
+            list-style: none;
+            padding: 5px;
+            float: left;
+        }
+        .inboxNav li a.active {
+            font-weight: bold
+        }
+        div.sendMsg.button {
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
+        }
+        td.unRead {
+            font-weight: bold;
+        }
+        td.subject {
+            font-weight: bold;
+        }
+        .search {
+            float: left;
+            margin-right: 15px;
+        }
+        /* =============================================================================
+   Pagination
+   ========================================================================== */
+        .pagination {
+            list-style: none;
+            margin: 1em 0;
+            padding: 0;
+            text-align: center;
+        }
+        .pagination li {
+            display: inline-block;
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
+        }
+        .pagination li a,
+        .pagination li span {
+            text-decoration: none;
+            display: block;
+            padding: .5em .75em;
+        }
+        .pagination li input {
+            text-align: center;
+        }
+        .pagination li a:hover {
+            background: #1eafd3;
+            color: #fff;
+            text-decoration: none;
+        }
+        .pagination li:first-child a {
+            position: relative;
+            padding-left: 1.5em;
+        }
+        .pagination li:last-child a {
+            position: relative;
+            padding-right: 1.5em;
+        }
+        .pagination li:first-child a:before,
+        .pagination li:first-child a:after,
+        .pagination li:last-child a:before,
+        .pagination li:last-child a:after {
+            position: absolute;
+            display: block;
+            content: '';
+            width: 0;
+            height: 0;
+            border-top: 6px solid transparent;
+            border-right: 4px solid;
+            border-bottom: 6px solid transparent;
+            border-left: 4px solid transparent;
+        }
+        .pagination li:last-child a:before,
+        .pagination li:last-child a:after {
+            border-right: 4px solid transparent;
+            border-left: 4px solid;
+        }
+        .pagination li:first-child a:before {
+            left: 3px;
+            top: 10px;
+        }
+        .pagination li:first-child a:after {
+            left: 8px;
+            top: 10px;
+        }
+        .pagination li:last-child a:before {
+            right: 8px;
+            top: 10px;
+        }
+        .pagination li:last-child a:after {
+            right: 3px;
+            top: 10px;
+        }
+        .focused,
+        input:focus {
+            outline: 0;
+            border-color: rgba(82, 168, 236, .8);
+            -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, .1), 0 0 8px rgba(82, 168, 236, .6);
+            -moz-box-shadow: inset 0 1px 3px rgba(0, 0, 0, .1), 0 0 8px rgba(82, 168, 236, .6);
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, .1), 0 0 8px rgba(82, 168, 236, .6);
+        }
+        /* 
+    Max width before this PARTICULAR table gets nasty
+    This query will take effect for any screen smaller than 760px
+    and also iPads specifically.
+    */
+        @media only screen and (max-width: 780px),
+        (min-device-width: 768px) and (max-device-width: 1024px) {
+            /* Force table to not be like tables anymore */
+            table,
+            thead,
+            tbody,
+            th,
+            td,
+            tr
+            {
+                display: block;
+            }
+            /* Hide table headers (but not display: none;, for accessibility) */
+            thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+            span.dateFloat {
+                float: right;
+                margin-top: -70px;
+            }
+            .sort, .contentWell {
+                float:left;
+            }
+            td {
+                /* Behave  like a "row" */
+                border: none;
+                border-bottom: none !important;
+                position: relative;
+                padding: 4px
+                /*  padding-left: 50%;*/
+            }
+            td:before {
+                /* Now like a table header */
+                position: absolute;
+                /* Top/left values mimic padding */
+                top: 6px;
+                left: 6px;
+                width: 45%;
+                padding-right: 10px;
+                white-space: nowrap;
+            }
+            .msgInbox {
+                margin-bottom: 10px;
+            }
+            /* display inboxNav li inline*/
+            .inboxNav li {
+                display: inline;
+                float: left;
+            }
+            /*Hide pagination numbers*/
+            li.page-num {
+                display: none;
+            }
+            /*control td color*/
+            td:nth-of-type(1) {
+                color: #000;
+            }
+            td:nth-of-type(2) {
+                color: #333;
+            }
+            td:nth-of-type(3) {
+                color: #968E8E;
+            }
+            td:nth-of-type(4) {
+                color: #58A4E9;
+            }
+            td:nth-of-type(5) {
+                display: none;
+            }
+            td.subject {
+                font-weight: normal;
+            }
+        }
+        /* Smartphones (portrait and landscape) ----------- */
+        @media only screen and (min-device-width: 320px) and (max-device-width: 480px) {
+            body {
+                padding: 0;
+                margin: 0;
+                width: 320px;
+            }
+        }
+        /* iPads (portrait and landscape) ----------- */
+        @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+            body {
+                width: 495px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+ <div id="secureMessage">
+            <h3>Secure Messaging</h3>
+
+            <div class="sendMsg button">Send a Message</div>
+
+            <div class="msgInbox">
+                <!-- content -->
+                <ul class="inboxNav">
+                    <li><a class="active">Inbox</a>
+                    </li>
+                    <li><a>Sent</a>
+                    </li>
+                    <li><a>Drafts</a>
+                    </li>
+                    <li><a>Archived</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="contentWell clearfix">
+                <div class="search">
+                    <span class="secureMessageControls" style="">
+                        <label for="secureMessageResultsSearch" class="inline">Search by</label>
+                        <select id="secureMessageResultsSearch" class="inline resultsSearch">
+
+
+                            <option value="searchSubject">Subject</option>
+                            <option value="searchTracking">Tracking #</option>
+                            <option value="searchDate">Date Range</option>
+                        </select>
+                    </span>
+
+                </div>
+                <div class="sort">
+                    <span class="secureMessageControls" style="">
+                        <label for="secureMessageResultsSort" class="inline">Sort Results</label>
+                        <select id="secureMessageResultsSort" class="inline resultsSort">
+
+
+                            <option value="msgFrom">From</option>
+                            <option value="msgSubject">Subject</option>
+                            <option value="msgTracking">Tracking #</option>
+                            <option value="msgDate">Date</option>
+                        </select>
+                        <select id="secureMessageResultsorder" class="inline resultOrder">
+
+
+                            <option value="ascending">Ascending</option>
+                            <option value="descending">Descending</option>
+
+                        </select>
+                    </span>
+
+                </div>
+            </div>
+            <div class="msgResults">
+                <table>
+                    <tbody>
+                        <tr>
+                            <td class="unRead">Member Services</td>
+                            <td class="subject"><a>ID Card Request</a>
+                            </td>
+                            <td>Tracking# 289424</td>
+                            <td>
+                                <span class="dateFloat">04/24/14</span>
+                            </td>
+                            <td>&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td>Dr. James Jay</td>
+                            <td><a>Lab Results</a>
+                            </td>
+                            <td>Tracking# 189424</td>
+                            <td>
+                                <span class="dateFloat">03/12/14</span>
+                            </td>
+                            <td>&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td>Dr. Becky Jones</td>
+                            <td><a>Refill Request</a>
+                            </td>
+
+                            <td>Tracking# 189426</td>
+                            <td>
+                                <span class="dateFloat">12/08/13</span>
+                            </td>
+                            <td>&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td class="unRead">Member Services</td>
+                            <td class="subject"><a>Address Change Complete</a>
+                            </td>
+
+                            <td>Tracking# 129424</td>
+                            <td>
+                                <span class="dateFloat">06/23/13</span>
+                            </td>
+                            <td>&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td>Member Services</td>
+                            <td><a>Claim #90898234</a>
+                            </td>
+
+                            <td>Tracking# 123424</td>
+                            <td>
+                                <span class="dateFloat">05/26/14</span>
+                            </td>
+                            <td>&nbsp;</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <ul class="pagination" id="resultsPagination">
+                    <li>
+                    <li><a>1</a>
+                    </li>
+                    <li><a>2</a>
+                    </li>
+                    <li><a>3</a>
+                    </li>
+                    <li><a>4</a>
+                    </li>
+                    <li><a>10</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+</body>
+
+</html>
+

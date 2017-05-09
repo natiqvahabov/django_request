@@ -1,0 +1,42 @@
+{% extends "account/base.html" %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+{% load account socialaccount %}
+
+{% block head_title %}{% trans "Daxil ol" %}{% endblock %}
+
+{% block content %}
+
+
+
+<div class="col-md-4 col-md-offset-4">
+  <div class="jumbotron" style="margin-top:50px;">  
+<div class="alert alert-danger">
+  <h2 class="text-center">{% trans "Emeliyyat ugurlu olmadi" %}</h2><br>
+  {% if error %}
+  <p class="text-center"> {{ error }}</p>
+  {% endif %}
+</div>
+
+
+
+<p style="text-size:10px" class="text-center" > Əsas səhifəyə qayıdırsız</p>
+<p class="text-center" id="counter" style="
+                                           font: 150px Helvetica, Sans-Serif;
+                                           letter-spacing: -5px;
+                                           color: rgba(0, 0, 255, 0.5);
+                                           text-align:center;">5</p>
+</div>
+
+<script>
+    setInterval(function() {
+        var div = document.querySelector("#counter");
+        var count = div.textContent * 1 - 1;
+        div.textContent = count;
+        if (count <= 0) {
+            location.href="{% url 'home' %}";
+        }
+    }, 1000);
+</script>
+
+{% endblock %} 

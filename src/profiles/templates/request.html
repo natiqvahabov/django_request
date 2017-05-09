@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<script type="text/javascript" src="{% static 'js/jquery-1.12.3.js' %}"></script>
+
+<div class="jumbotron" style="margin-top:50px;">
+<div class="container">
+	<div class="row">
+    <h1 class="text-center">Yeni sorğu yarat</h1>
+
+	  <div class="col-sm-6 col-sm-offset-3">
+    {% if message %}
+        <div class="alert alert-danger">
+            <p class="text-center">{{message}}</p>
+        </div>
+    {% endif %}
+        <hr>
+        <form action="{% url 'addRequest' %}" method="post" class="form-horizontal" role="form" id="formID" enctype="multipart/form-data">
+         {% csrf_token %}
+          <div class="form-group">
+            <label class="col-lg-3 control-label">Başlıq:</label>
+            <div class="col-lg-8">
+              <input class="form-control" name="title" required placeholder="Sualın başlığnı daxil edin" type="text" value="">
+            </div>
+          </div>
+
+          <div class="form-group">
+             <label class="col-lg-3 control-label" for="comment">Mesaj:</label>
+             <div class="col-lg-8">
+                <textarea class="form-control" name="message" rows="5" required="true" placeholder="Sualın mətnini daxil edin" id="comment"></textarea>
+             </div>
+          </div>
+         
+          <div class="form-group">
+            <label class="col-lg-3 control-label">Kateqoriya:</label>
+            <div class="col-lg-8">
+              <div class="ui-select">        
+                <select id="category" name="category" class="form-control">
+                  <option value="3">Digər</option>
+                  {% for catName in catNames %} 
+                  <option value="{{catName.0}}">{{catName.1}}</option>
+                  {% endfor %}
+                </select>                
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+             <label class="col-lg-3 control-label">File əlave et:</label>
+             <div class="col-lg-8">
+                <input type="file" name="myFile" value="myFile" id="myFile"> <label for="myFile"></label>
+             </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-md-3 control-label"></label>
+            <div class="col-md-8">
+              <input type="submit" class="btn btn-primary" value="Göndər">
+              <span></span>
+              <a class="btn btn-default" href="{% url 'home' %}" role="button">Ləğv et</a>
+            </div>
+          </div>
+
+        </form>
+
+      </div>
+     </div>
+  </div>
+</div>
+
+{% endblock %}
+
+<script>
+$(document).ready(function() {
+  $(".dropdown-toggle").dropdown();
+});
+
+$("#returnHome").click(function(event) {
+  alert("Home");
+});
+</script>

@@ -1,0 +1,114 @@
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+{% load custom_tags %}
+
+{% block content %}
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/jquery.dataTables.min.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/dataTableDesign.css' %}">
+<script type="text/javascript" src="{% static 'js/replace.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery-1.12.3.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery.dataTables.min.js' %}"></script>
+
+<div class="container">
+
+{% if requests %}
+<table id="alldataTable" class="table display stripe" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Göndərən</th>
+                <th>Başlıq</th>
+                <th>Mətn</th>
+                <th>Status</th>
+                <th>Tarix</th>
+            </tr>
+        </thead>
+
+<!-- her requeste data-user deyeri atmaq lazimdir ki, hansi kateqoriyaya aid olundugu bilinsin -->
+        <tbody>
+        {% for request in requests %}
+           {% if request.status == "open" %}
+              <tr style="color:green;">
+           {% endif %}
+           {% if request.status == "closed" %}
+              <tr style="color:red;">
+           {% endif %}
+                 <td>   {{ request.id }}        </td>
+                 <td>   {{ request.sender }}    </td>
+                 <td>   {{ request.title|convert_utf8|shortName }} </td>
+                 <td>   {{ request.description|convert_utf8|shortName }} </td>
+                 <td>   <b>{{ request.status }}</b> </td>
+                 <td>   {{ request.ins_date }} </td>
+                
+              </tr>
+        {% endfor %}
+        </tbody>
+        
+        <tfoot>
+            <tr>
+            	<th>ID</th>    
+                <th>Göndərən</th>
+                <th>Başlıq</th>
+                <th>Mətn</th>
+                <th>Status</th>
+                <th>Tarix</th>
+            </tr>
+        </tfoot>
+
+</table>
+{% else %}
+<p>Bu kateqoriyada gosterilecek hec bir request yoxdur</p>
+{% endif %}
+</div>
+
+<script>
+var table1;
+var selector = '.list-group a';
+var select = "";
+var id="";
+
+$(document).ready(function() {
+    $('#alldataTable').DataTable( {
+        "order": [[ 5, "desc" ]]
+    } );
+    table1 = $('#alldataTable').DataTable();
+} );
+
+$("#taggedRequests").click(function() {
+    $(selector).removeClass('active');
+    $(this).addClass('active');
+    
+    jQuery.fn.dataTable.ext.search.pop();
+    table1.draw(true);
+});
+
+$("#sentRequests").click(function() {
+    $(selector).removeClass('active');
+    $(this).addClass('active');
+    
+    jQuery.fn.dataTable.ext.search.pop();
+    table1.draw(true);
+});
+
+$('#alldataTable tbody').on('click', 'tr', function () {
+    var data = table1.row( this ).data();
+    var request_id = data[0];
+    $(selector).removeClass('active');
+    $(this).addClass('active');
+    
+    var url = "{% url 'about' %}";
+    var form = $('<form action="' + url + '" method="post">'+ "{% csrf_token %}" +
+                 '<input type="hidden" name="request_id" value="' + request_id + '" />' +
+                 '</form>');
+    $('body').append(form);
+    form.submit();
+});
+
+</script>
+
+{% endblock %}

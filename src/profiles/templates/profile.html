@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+<script type="text/javascript" src="{% static 'js/jquery-1.12.3.js' %}"></script>
+{% include 'editprofile.html' %}
+
+{% endblock %}

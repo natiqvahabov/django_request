@@ -1,0 +1,65 @@
+
+{% load staticfiles %}
+<html>
+ <head>
+    <script type="text/javascript" src="{% static 'js/jquery-1.12.3.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/Chart.js' %}"></script>
+ </head>
+ 
+ <body> 
+     <canvas id="mycanvas" width=256 height=256>
+     {% if chart|length > 1 %}
+     <input type="hidden" id="aciq" value="{{chart.0}}"/>
+     <input type="hidden" id="icrada" value="{{chart.1}}"/>
+     <input type="hidden" id="qapali" value="{{chart.2}}"/>
+     <input type="hidden" id="silinmis" value="0"/>
+     {% else %}
+     <input type="hidden" id="aciq" value="0"/>
+     <input type="hidden" id="icrada" value="0"/>
+     <input type="hidden" id="qapali" value="0"/>
+     <input type="hidden" id="silinmis" value="{{chart.0}}"/>
+     {% endif %}
+
+     <script>
+       $(document).ready(function(){
+        val1 = document.getElementById('aciq').value;
+        val2 = document.getElementById('icrada').value;
+        val3 = document.getElementById('qapali').value;
+        val4 = document.getElementById('silinmis').value;
+
+       	var ctx = $("#mycanvas").get(0).getContext("2d");
+
+        if(val1>0 || val2>0 || val3>0){
+       	var data = [
+             {
+                    value:val1,
+                    color:"#0066ff",
+                    label:"Aciq"
+             },
+             {
+
+             	      value:val2,
+                    color:"#00cc66",
+                    label:"Qapanmis"
+             },
+             {
+
+             	      value:val3,
+                    color:"#ff3300",
+                    label:"Icrada"
+             }
+
+       	];}
+        else{
+        var data = [
+             {
+                    value:val4,
+                    color:"#000000",
+                    label:"Silinmis requestler"
+             }
+        ];}
+       	var piechart = new Chart(ctx).Pie(data);
+       })
+     </script> 
+ </body>
+</html>

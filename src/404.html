@@ -1,0 +1,20 @@
+{% extends "account/base.html" %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+{% load account socialaccount %}
+
+{% block head_title %}{% trans "Sehife tapilmadi" %}{% endblock %}
+
+{% block content %}
+
+<div class="col-md-4 col-md-offset-4">
+  <div class="jumbotron" style="margin-top:50px;opacity:0.90"> 
+  	<h1 class="text-center" style="color:#A12830">4+800:2</h1>
+  	<h3 class="text-center">Səhifə tapılmadı</h3>
+  	<div style="text-align: center">
+  		<a href="{% url 'home' %}">Əsas səhifə</a>
+  	</div>
+  </div>
+</div>
+
+{% endblock %}

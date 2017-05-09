@@ -1,0 +1,35 @@
+{% load i18n %}
+{% load staticfiles %}
+
+        <div class="panel panel-default">
+                <div class="panel-heading c-list">
+                    <h4 class="modal-title" id="myModalLabel" align="center">Istifadeciler</h4>
+                </div>
+                
+                <!-- 
+                <div class="row" style="">
+                    <div class="col-xs-12">
+                        <div class="input-group c-search">
+                          <input type="text" class="form-control" id="myInput" onkeyup="myFunction()"> 
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="button"><span class="glyphicon glyphicon-search text-muted"></span></button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                -->
+                <ul class="list-group" id="myUL">
+                    {% for user in users %}
+                    <li class="list-group-item">
+                        <div class="col-xs-12 col-sm-3">
+                            <img src="{{ BASE_DIR }}/media/profile_pictures/{{user.username}}/profile.jpg" style="height:80px; width:80px;"  alt="ProfilePictures" class="img-circle">
+                        </div>
+                        <div class="col-xs-12 col-sm-9">
+                            <span class="name">{{user.username}}</span><br>
+                            <span class="glyphicon glyphicon-check text-muted c-info" data-toggle="tooltip" title="" data-original-title="5020 Poplar Dr"> Bu istifadecini sec -   </span><input type="checkbox" name="userList" id="{{user.id}}" value="{{user.id}}">
+                        </div>
+                        <div class="clearfix"></div>
+                    </li>
+                    {% endfor %}
+                </ul>
+        </div>

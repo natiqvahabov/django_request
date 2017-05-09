@@ -1,0 +1,211 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load static %}
+{% load notifications_tags %} 
+<!--  Style of jumbotron  -->
+{% block style %}
+  <style> 
+   .jumbotron{
+   	text-align: center;
+   	margin-top: 50px;
+   }
+   .loader {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    background-color: black;
+    background: url("{% static 'img/loader.gif' %}") no-repeat black;
+    background-size:500px;
+    background-position: center; 
+    }
+  </style>
+{% endblock %}
+
+
+<!-- Main jumbotron for a primary marketing message or call to action -->
+{% block jumbotron %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/leftTab.css' %}">
+<div class="jumbotron" style="margin-top:50px; text-align:center;">
+        
+  <div class="container-fluid">
+
+    {% block content %}
+    <div class="row">
+
+        <div class="col-md-4 col-md-offset-4">
+
+         {% if request.user.is_authenticated %}
+            {% include 'chart.html' %}
+         {% else %} 
+
+          <form class="login" method="POST" action="{% url 'account_login' %}">
+          {% csrf_token %}
+
+           <div id="div_id_login" class="form-group"> <label for="id_login" class="control-label  requiredField">
+                Login<span class="asteriskField">*</span> </label> <div class="controls "> <input autofocus="autofocus" class="textinput textInput form-control" id="id_login" name="login" placeholder="Username or e-mail" type="text" required=""> </div> </div> <div id="div_id_password" class="form-group"> <label for="id_password" class="control-label  requiredField">
+                Password<span class="asteriskField">*</span> </label> <div class="controls "> <input class="textinput textInput form-control" id="id_password" name="password" placeholder="Password" type="password" required=""> </div> </div> <div class="form-group"> <div id="div_id_remember" class="checkbox"> <label for="id_remember" class=""> <input class="checkboxinput" id="id_remember" name="remember" type="checkbox">
+                    Remember Me
+                </label> </div> 
+           </div>
+  
+           <a class="btn btn-link button secondaryAction" href="{% url 'account_reset_password' %}">Forgot Password?</a>
+           <a class="btn btn-link button secondaryAction" href="{% url 'account_signup' %}">SignUp</a>
+           <button class="btn btn-default" type="submit">Sign In</button>
+           </form>
+           {% endif %}
+        </div>
+  
+    </div>
+    {% endblock %}
+    
+    <div class="row" id="ABCD">
+        <div class="col-lg-11 col-md-5 col-sm-8 col-xs-9 bhoechie-tab-container">         
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 bhoechie-tab-menu">
+              <div class="list-group">
+                    <a id="taggedRequests" href="" onclick="taggedRequests();return false;" class="list-group-item text-center">
+                      <h4 class="glyphicon glyphicon-home"></h4><br/>Yeni requestler
+                    </a>
+                   <!--
+                    <a id="ParentRequests" href="" onclick="ParentRequests();return false;" class="list-group-item text-center">
+                      <h4 class="glyphicon glyphicon-home"></h4><br/>Parent requestler
+                    </a>
+                   -->
+                  {% if catNames%}                   
+                    {% for catName in catNames %}
+                      <a id="{{catName.0}}" href="{{catName.0}}" onclick="myCatRequests({{catName.0}});return false;" class="list-group-item text-center">
+                          <h4 class="glyphicon glyphicon-home"></h4><br/>{{catName.1}} <!--(0-'id'),(1-'name')-->
+                      </a>
+                    {% endfor %}   
+                  {% endif %}
+                    <a id="otherRequests" href="" onclick="otherRequests();return false;" class="list-group-item text-center">
+                      <h4 class="glyphicon glyphicon-home"></h4><br/>Digər
+                    </a>
+                    <a id="sentRequests" href="" onclick="sentRequests();return false;" class="list-group-item text-center">
+                      <h4 class="glyphicon glyphicon-home"></h4><br/>Göndərdiklərniz
+                    </a>
+              </div>
+            </div>
+            <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9 bhoechie-tab" value="allDiv" id="allDiv">
+                <div class="bhoechie-tab-content active">
+                    <center>
+                      {% include 'alldataTable.html' %}
+                      <br>
+                      <br>
+                    </center>
+                </div> 
+            </div>
+
+            {% for catName in catNames %} 
+            <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9 bhoechie-tab" value="{{catName.0}}Div" id="{{catName.0}}Div">
+                <div class="bhoechie-tab-content">
+                    <center>
+                      <br>
+                      <br>
+                    </center>
+                </div> 
+            </div>
+            {% endfor %}
+          </div>
+       </div>
+    </div>
+    <h5 class="text-right" style="margin-top:5%">© Socar 2017<h5>
+</div>
+
+<input type="hidden" id="hiddenSelector" value="{{activeCategory}}"/>
+
+<script>
+
+$(document).ready(function() {
+    $(".loader").fadeOut();
+    $(".dropdown-toggle").dropdown();
+    document.getElementById("ABCD").focus();
+
+    var selector = '.list-group a';
+    var select = "";
+    var val = document.getElementById('hiddenSelector').value;
+    var tab = ""
+
+    if(typeof(val) != "number"){
+      tab = "#" + val;
+    }else{
+      tab = "#" + val.toString();
+    }
+
+    $(selector).removeClass('active');
+    $(tab).addClass('active');
+
+    $('html, body').animate({
+          scrollTop: $("#ABCD").offset().top
+    }, 2500);
+
+    $("div.bhoechie-tab-menu>div.list-group>a").click(function(e) {
+         e.preventDefault();
+         $(this).siblings('a.active').removeClass("active");
+         $(this).addClass("active");
+         var index = $(this).index();
+         $("div.bhoechie-tab>div.bhoechie-tab-content").removeClass("active");
+         $("div.bhoechie-tab>div.bhoechie-tab-content").eq(index).addClass("active");
+    });
+
+});
+
+function taggedRequests(){
+    $(".loader").fadeIn();
+    var url = "{% url 'home' %}";
+    var form = $('<form action="' + url + '" method="post">'+ "{% csrf_token %}" +
+                 '</form>');
+    $('body').append(form);
+    form.submit();
+}
+
+function ParentRequests(){
+    $(".loader").fadeIn();
+    var url = "{% url 'getParentRequests' %}";
+    var form = $('<form action="' + url + '" method="post">'+ "{% csrf_token %}" +
+                 '</form>');
+    $('body').append(form);
+    form.submit();
+}
+
+function otherRequests(){
+    $(".loader").fadeIn();
+    var url = "{% url 'otherRequests' %}";
+    var form = $('<form action="' + url + '" method="post">'+ "{% csrf_token %}" +
+                 '</form>');
+    $('body').append(form);
+    form.submit();
+}
+
+function sentRequests(){
+    $(".loader").fadeIn();
+    var url = "{% url 'getSentRequests' %}";
+    var form = $('<form action="' + url + '" method="post">'+ "{% csrf_token %}" +
+                 '</form>');
+    $('body').append(form);
+    form.submit();
+}
+
+function myCatRequests(val){
+    $(".loader").fadeIn();
+    var url = "{% url 'getCatRequests' %}";
+    var form = $('<form action="' + url + '" method="post">'+ "{% csrf_token %}" +
+                 '<input type="hidden" name="catID" value="' + val + '" />' +
+                 '</form>');
+    $('body').append(form);
+    form.submit();
+}
+</script>
+
+{% endblock %}
+
+
+
+
+
+
+
+

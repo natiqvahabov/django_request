@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load staticfiles %}
+{% load notifications_tags %} 
+{% load custom_tags %}
+{% block head_title %} Messages {% endblock %}
+
+{% block body %}
+
+{% block content %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/searchResult.css' %}">
+
+<div class="jumbotron" style="margin-top:50px;">
+
+<div class="container bootstrap snippet">
+    <div class="row">
+        <!--=========================================================-->
+        <!-- selected chat -->
+        <div style="margin: auto; width: 75%; padding: 10px;">
+        <h2 class="text-center">Axtarisin neticeleri</h2><br>
+        <h6 class="text-center"><b>{{searchKey}}</b> uzre   -{{searchCount}}-   netice tapildi</h6>
+        {% if searchRequests %}
+        <table cellspacing='0' width="700px" style="margin: 0 auto;" id="searchResult"> <!-- cellspacing='0' is important, must stay -->
+          <thead>
+            <tr>
+              <th>Sorgunun metni</th>
+              <th>Sorgunun basligi</th>
+              <th>Gonderen</th>
+              <th>Tarix</th>
+            </tr>
+          </thead>
+
+          <tbody>
+        
+           {% for searchRequest in searchRequests %}
+            <tr>
+              <td style="display:none;" value="{{searchRequest.id}}">{{searchRequest.id}}</td>
+              <td>{{searchRequest.description|convert_utf8|shortName}}</td>
+              <td>{{searchRequest.title|convert_utf8|shortName}}</td>
+              <td>{{searchRequest.sender}}</td>
+              <td>{{searchRequest.ins_date}}</td>
+            </tr>
+          {% endfor %}
+        {% endif %}  
+          </tbody>
+        </table>
+
+        <div id="wrapper" style="text-align: center"> 
+          <div id="yourdiv" style="display: inline-block;">
+            {% if searchRequests.has_other_pages %}
+              <ul class="pagination">
+                {% if searchRequests.has_previous %}
+                     <li><a href="?page={{ searchRequests.previous_page_number }}&key={{ searchKey }}">&laquo;</a></li>
+                {% else %}
+                  <li class="disabled"><span>&laquo;</span></li>
+                {% endif %}
+                {% for i in searchRequests.paginator.page_range %}
+                  {% if searchRequests.number == i %}
+                    <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                  {% else %}
+                    <li><a href="?page={{ i }}&key={{ searchKey }}">{{ i }}</a></li>
+                  {% endif %}
+                {% endfor %}
+                {% if searchRequests.has_next %}
+                  <li><a href="?page={{ searchRequests.next_page_number }}&key={{ searchKey }}">&raquo;</a></li>
+                {% else %}
+                  <li class="disabled"><span>&raquo;</span></li>
+                {% endif %}
+              </ul>
+            {% endif %}
+          </div>
+        </div>
+        
+        </div>
+    </div>         
+</div>        
+</div>
+
+<script>
+$('#searchResult tbody tr').click( function () {
+    var req_id = $(this).find('td:first').text();
+
+    var url = "{% url 'about' %}";
+    var form = $('<form action="' + url + '" method="post">'+ "{% csrf_token %}" +
+                 '<input type="hidden" name="request_id" value="' + req_id + '" />' +
+                 '</form>');
+    $('body').append(form);
+    form.submit();
+} );
+</script>
+{% endblock %}
+{% endblock %}
+
