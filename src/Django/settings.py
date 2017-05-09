@@ -19,7 +19,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 #EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 #EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-EMAIL_HOST = '192.168.1.122'
+EMAIL_HOST = '******'
 EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = ''
 EMAIL_PORT = 25
@@ -122,11 +122,11 @@ WSGI_APPLICATION = 'Django.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.oracle',
-        'NAME': 'rptqaz',
-        'USER': 'dev_user',
-        'PASSWORD': 'Devel0ppp',
-        'HOST': '192.168.1.87',
-        'PORT': '1521',
+        'NAME': '*****',
+        'USER': '*****',
+        'PASSWORD': '******',
+        'HOST': '*****',
+        'PORT': '*****',
     }
 }
 
